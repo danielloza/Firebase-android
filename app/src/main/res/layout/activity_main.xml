@@ -16,7 +16,7 @@
         android:hint="Nombre">
 
         <EditText
-            android:id="@+id/txt_nomPersona"
+            android:id="@+id/txt_nombrePersona"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/white"
@@ -33,7 +33,7 @@
         android:hint="Apellidos">
 
         <EditText
-            android:id="@+id/txt_apellidpPersona"
+            android:id="@+id/txt_appPersona"
             android:layout_width="match_parent"
             android:backgroundTint="@color/white"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         android:hint="Correo">
 
         <EditText
-            android:id="@+id/txt_emailPersona"
+            android:id="@+id/txt_correoPersona"
             android:layout_width="match_parent"
             android:backgroundTint="@color/white"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         android:hint="Password">
 
         <EditText
-            android:id="@+id/txt_passPersona"
+            android:id="@+id/txt_passwordPersona"
             android:layout_width="match_parent"
             android:backgroundTint="@color/white"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30dp"
-        android:text="Personas Guardadas"
+        android:text="Lista de Personas"
         android:layout_gravity="center"
         android:layout_margin="10dp"/>
 

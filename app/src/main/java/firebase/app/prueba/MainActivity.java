@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Persona> listPersona = new LinkedList<Persona>();
     ArrayAdapter<Persona> arrayAdapterPer;
-    EditText nombreP, apellidoP, emailP, passP;
+    EditText nombreP, appP, correoP, passwordP;
     ListView lvPersona;
 
     FirebaseDatabase firebaseDatabase;
@@ -45,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Buscando el Id
-        nombreP = findViewById(R.id.txt_nomPersona);
-        apellidoP = findViewById(R.id.txt_apellidpPersona);
-        emailP = findViewById(R.id.txt_emailPersona);
-        passP = findViewById(R.id.txt_passPersona);
+        nombreP = findViewById(R.id.txt_nombrePersona);
+        appP = findViewById(R.id.txt_appPersona);
+        correoP = findViewById(R.id.txt_correoPersona);
+        passwordP = findViewById(R.id.txt_passwordPersona);
         lvPersona = findViewById(R.id.lv_datosPersona);
 
         initFirebase();
@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 personaSelected = (Persona) parent.getItemAtPosition(position);
                 nombreP.setText(personaSelected.getNombre());
-                apellidoP.setText(personaSelected.getApellido());
-                emailP.setText(personaSelected.getCorreo());
-                passP.setText(personaSelected.getPassword());
+                appP.setText(personaSelected.getApellido());
+                correoP.setText(personaSelected.getCorreo());
+                passwordP.setText(personaSelected.getPassword());
             }
         });
     }
@@ -105,22 +105,52 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
+        String nombre = nombreP.getText().toString();
+        String apellido = appP.getText().toString();
+        String correo = correoP.getText().toString();
+        String pass = passwordP.getText().toString();
+
         switch (item.getItemId()){
             case R.id.icon_add:{
 
-                agregarPersona();
+                if(nombre.equals("") || apellido.equals("") || correo.equals("") || pass.equals("")){
+                    validacion();
+                }else {
+
+                    Persona p = new Persona();
+                    p.setUid(UUID.randomUUID().toString());
+                    p.setNombre(nombre);
+                    p.setApellido(apellido);
+                    p.setCorreo(correo);
+                    p.setPassword(pass);
+                    databaseReference.child("Persona").child(p.getUid()).setValue(p);
+                    Toast.makeText(this, "Agregado", Toast.LENGTH_SHORT).show();
+                    limpiar();
+                }
 
                 break;
             }
             case R.id.icon_save:{
 
-                actualizarPersona();
+                Persona p = new Persona();
+                p.setUid(personaSelected.getUid());
+                p.setNombre(nombre.toString().trim());
+                p.setApellido(apellido.toString().trim());
+                p.setCorreo(correo.toString().trim());
+                p.setPassword(pass.toString().trim());
+                databaseReference.child("Persona").child(p.getUid()).setValue(p);
+                Toast.makeText(this,"Actualizado",Toast.LENGTH_SHORT).show();
+                limpiar();
 
                 break;
             }
             case R.id.icon_delete:{
 
-                eliminarPersona();
+                Persona p = new Persona();
+                p.setUid(personaSelected.getUid());
+                databaseReference.child("Persona").child(p.getUid()).removeValue();
+                Toast.makeText(this,"Eliminado",Toast.LENGTH_SHORT).show();
+                limpiar();
 
                 break;
             }
@@ -129,85 +159,33 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Método para agregar personas
-    private void agregarPersona(){
-
-        String nombre = nombreP.getText().toString();
-        String apellido = apellidoP.getText().toString();
-        String correo = emailP.getText().toString();
-        String pass = passP.getText().toString();
-
-        if(nombre.equals("") || apellido.equals("") || correo.equals("") || pass.equals("")){
-            validacion();
-        }else {
-
-            Persona p = new Persona();
-            p.setUid(UUID.randomUUID().toString());
-            p.setNombre(nombre);
-            p.setApellido(apellido);
-            p.setCorreo(correo);
-            p.setPassword(pass);
-            databaseReference.child("Persona").child(p.getUid()).setValue(p);
-            Toast.makeText(this, "Agregado", Toast.LENGTH_SHORT).show();
-            limpiar();
-        }
-    }
-
-    //Método para actualizar personas
-    private void actualizarPersona(){
-        String nombre = nombreP.getText().toString();
-        String apellido = apellidoP.getText().toString();
-        String correo = emailP.getText().toString();
-        String pass = passP.getText().toString();
-
-        Persona p = new Persona();
-        p.setUid(personaSelected.getUid());
-        p.setNombre(nombre.toString().trim());
-        p.setApellido(apellido.toString().trim());
-        p.setCorreo(correo.toString().trim());
-        p.setPassword(pass.toString().trim());
-        databaseReference.child("Persona").child(p.getUid()).setValue(p);
-        Toast.makeText(this,"Actualizado",Toast.LENGTH_SHORT).show();
-        limpiar();
-    }
-
-    //Método para eliminar persona
-    private void eliminarPersona(){
-
-        Persona p = new Persona();
-        p.setUid(personaSelected.getUid());
-        databaseReference.child("Persona").child(p.getUid()).removeValue();
-        Toast.makeText(this,"Eliminado",Toast.LENGTH_SHORT).show();
-        limpiar();
-    }
-
     //Método para limpiar cajas de texto
     private void limpiar() {
         nombreP.setText("");
-        apellidoP.setText("");
-        emailP.setText("");
-        passP.setText("");
+        appP.setText("");
+        correoP.setText("");
+        passwordP.setText("");
     }
 
     //Método para validar las casillas vacias
     public void validacion(){
 
         String nombre = nombreP.getText().toString();
-        String apellido = apellidoP.getText().toString();
-        String correo = emailP.getText().toString();
-        String pass = passP.getText().toString();
+        String apellido = appP.getText().toString();
+        String correo = correoP.getText().toString();
+        String pass = passwordP.getText().toString();
 
         if(nombre.equals("")){
-            nombreP.setError("Requerido");
+            nombreP.setError("Es Requerido");
         }
         else if(apellido.equals("")){
-            apellidoP.setError("Requerido");
+            appP.setError("Es Requerido");
         }
         else if(correo.equals("")){
-            emailP.setError("Requerido");
+            correoP.setError("Es Requerido");
         }
         else if(pass.equals("")){
-            passP.setError("Requerido");
+            passwordP.setError("Es Requerido");
         }
 
 
